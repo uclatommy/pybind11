@@ -15,9 +15,10 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   set(PYBIND11_MASTER_PROJECT ON)
 endif()
 
-option(PYBIND11_INSTALL "Install pybind11 header files?" ${PYBIND11_MASTER_PROJECT})
-option(PYBIND11_TEST    "Build pybind11 test suite?"     ${PYBIND11_MASTER_PROJECT})
-option(PYBIND11_WERROR  "Report all warnings as errors"  OFF)
+option(PYBIND11_INSTALL   "Install pybind11 header files?" ${PYBIND11_MASTER_PROJECT})
+option(PYBIND11_TEST      "Build pybind11 test suite?"     ${PYBIND11_MASTER_PROJECT})
+option(PYBIND11_WERROR    "Report all warnings as errors"  OFF)
+option(PYBIND11_LLVM_PATH "Path of LLVM compiler"          "")
 
 # Add a CMake parameter for choosing a desired Python version
 set(PYBIND11_PYTHON_VERSION "" CACHE STRING "Python version to use for compiling modules")
@@ -97,6 +98,13 @@ function(pybind11_add_module target_name)
       check_cxx_compiler_flag("-flto" HAS_LTO_FLAG)
       if(HAS_LTO_FLAG AND NOT CYGWIN)
         target_compile_options(${target_name} PRIVATE -flto)
+        if(NOT PYBIND11_LLVM_PATH EQUAL "")
+          set(CMAKE_AR ${PYBIND11_LLVM_PATH}/bin/llvm-ar CACHE FILEPATH "ar Override" FORCE)
+          set(CMAKE_LINKER ${PYBIND11_LLVM_PATH}/bin/llvm-link CACHE FILEPATH "ld Override" FORCE)
+          set(CMAKE_OBJDUMP ${PYBIND11_LLVM_PATH}/bin/llvm-objdump CACHE FILEPATH "Objdump Override" FORCE)
+          set(CMAKE_RANLIB ${PYBIND11_LLVM_PATH}/bin/llvm-ranlib CACHE FILEPATH "ranlib Override" FORCE)
+          set(CMAKE_MODULE_LINKER_FLAGS -flto CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
+        endif()
       endif()
 
       # Intel equivalent to LTO is called IPO

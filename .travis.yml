@@ -24,6 +24,9 @@ matrix:
     osx_image: xcode7.3
     env: PYTHON=2.7 CPP=14 CLANG
   - os: osx
+    osx_image: xcode8.1
+    env: PYTHON=3.5 CPP=14 CLANG
+  - os: osx
     osx_image: xcode7.3
     env: PYTHON=3.5 CPP=14 CLANG
   # A barebones build makes sure everything still works without optional deps (numpy/scipy/eigen)

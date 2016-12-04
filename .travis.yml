@@ -59,6 +59,7 @@ before_install:
     export CXX=g++-$GCC CC=gcc-$GCC;
     if [ "$GCC" = "6" ]; then export DOCKER=debian:testing CXX=g++ CC=gcc; fi
   elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    brew upgrade cmake || brew install cmake;
     export CXX=clang++ CC=clang;
   fi
   if [ -n "$CPP" ]; then export CPP=-std=c++$CPP; fi
